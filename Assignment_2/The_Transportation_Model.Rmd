@@ -1,0 +1,115 @@
+---
+title: "The_Transportaion_Model"
+author: "Jeeva Thangamani"
+date: "2023-10-08"
+output:
+  word_document: default
+  html_notebook:
+    theme: cerulean
+    highlight: textmate
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Summary:
+
+1. Northern Airplane Company's minimum cost to satisfy production and storage requirements is $77.3 million.
+
+2. The decision variables provide a production schedule, and the shadow prices help understand the sensitivity of the objective value to changes in costs and constraints.\
+x11 = 10, x12 = 15.\
+x23 = 5.\
+x31 = 25, x32 = 5.\
+x41 = 10, x43 = 30.\
+(NOTE: Xij - Amount produced in Month i for Month j)\
+Above values represent the number of engines to be produced in each of the four months. 
+
+3.  The sensitivity analysis results provide valuable information about how changes in decision variable bounds and constraint bounds would impact the objective function value and shadow prices in the linear programming problems.
+
+Problem Statement:
+
+The NORTHERN AIRPLANE COMPANY builds commercial airplanes for various airline companies around the world. The last stage in the production process is to produce the jet
+engines and then to install them (a very fast operation) in the completed airplane frame. The company has been working under some contracts to deliver a considerable number of
+airplanes in the near future, and the production of the jet engines for these planes must now be scheduled for the next four months.
+
+To meet the contracted dates for delivery, the company must supply engines for installation in the quantities indicated in the second column of Table 9.7. Thus, the cumulative number of engines produced by the end of months 1, 2, 3, and 4 must be at least 10, 25, 50, and 70, respectively. The facilities that will be available for producing the engines vary according to other production, maintenance, and renovation work scheduled during this period. The resulting monthly differences in the maximum number that can be produced and the cost (in millions of dollars) of producing each one are given in the third and fourth columns of Table 9.7 (that was shown in class).
+
+Because of the variations in production costs, it may well be worthwhile to produce some of the engines a month or more before they are scheduled for installation, and this possibility is being considered. The drawback is that such engines must be stored until the scheduled installation (the airplane frames will not be ready early) at a storage cost of $15,000 per month (including interest on expended capital) for each engine,1 as shown in the rightmost column of Table 9.7.
+
+The production manager wants a schedule developed for the number of engines to be produced in each of the four months so that the total of the production and storage costs will be minimized.
+
+Problem Description:
+
+The problem involves the Northern Airplane Company's production of jet engines over four months to meet contracted delivery dates. The objective is to prepare production schedule which will minimize the total production and storage costs.
+
+
+
+Let's, formulate and solve the transportation model problem, and we are looking for low cost so it is a minimization problem.
+
+Calling the Required library to solve the LP Transportation problem
+
+
+```{r}
+#Load Required library-lpSolveAPI
+library(lpSolveAPI)
+```
+
+* Using the Transportation problem, we created a text file. Using the read.lp statement, Reading the lp file contains the Variables and constraints which are used to solve this problem
+
+/* Objective function */
+min: 1.08 x11+1.095 x12+1.110 x13+1.125 x14+100 x21+1.110 x22+1.125 x23+1.140 x24+100 x31+100 x32+1.100 x33+1.115 x34+100 x41+100 x42+100 x43+1.130 x44;
+
+/* Constraints */
+x11 + x12 + x13 + x14 + x15 = 25;
+x21 + x22 + x23 + x24 + x25 = 35;
+x31 + x32 + x33 + x34 + x35 = 30;
+x41 + x42 + x43 + x44 + x45 = 10;
+x11 + x21 + x31 + x41 = 10;
+x12 + x22 + x32 + x42 = 15;
+x13 + x23 + x33 + x43 = 25;
+x14 + x24 + x34 + x44 = 20;
+x15 + x25 + x35 + x45 = 30;
+
+```{r}
+#Reading the lp file
+x <- read.lp("transportation1-1.lp")
+x
+```
+
+
+Note:   The above lp file contains 20 variables and 9 constraints where Xij - Amount produced in Month i for Month j, Cij - Cost associated with each unit of Xij. There is an inequality in demand and supply so we are creating a dummy demand to meet the differnce between total demand. We are assigning a high value($100000) for dummy demand, so that while calculating for low cost the dummy demand values are avoided due to high cost. 
+Now,  Supply and Demand = 100.
+
+* Using the 20 decision variables and 9 constraints we are solving this problem to find the values of decision variables and objective value
+
+
+```{r}
+solve(x)
+get.objective(x)    #To get Objective value
+get.variables(x)    #To get Decision variable Values
+get.constraints(x)  #To get Constraint Values
+```
+Note: \
+1. The value 0 indicates that the problem has a solution and it is successfully found.\
+2. The Objective of X is 77.3 million.\
+3. The above values represents the values of decision variables.\
+4. The above values are constraints values which are given in lp.\
+
+* To get reduced cost, shadow price for supply or storage 
+
+```{r}
+get.sensitivity.obj(x) #get reduced cost
+```
+
+```{r}
+get.sensitivity.objex(x)
+```
+
+```{r}
+get.sensitivity.rhs(x) #get shadow price
+```
+
