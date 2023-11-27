@@ -1,0 +1,78 @@
+---
+title: "Assignment - 4- GOAL PROGRAMMING "
+author: "Jeeva"
+date: "2023-11-26"
+output:
+  word_document: default
+  html_document: default
+---
+Summary:
+
+In summary, this goal programming technique, in my opinion, takes specific objectives and restrictions related to workforce stability and earnings development into account, making it easier to assess production decisions in a systematic manner. The company's objective function is to make a profit of 225 million dollars as its target function.
+
+(a) The corporation must mix X1, X2, and X3 in order to use the combination. To maximize profit, the company's lone product, Product 3, can only be manufactured in 15 units. However, X3 has been adjusted.
+
+(b) Despite the fact that employee levels would be stabilized at a maximum of 50,000 workers (x1p), the firm had 2,500 excess workers in this case. A penalty for the overage would be imposed.
+
+(c) As a result of y2p and y2m, the earnings of the following year are evaluated in respect to the present level; in this case, the current level is understood as "0," indicating that the earnings of the upcoming year do not differ from those of the current year. 
+
+
+Problem Statement : 
+    The Research and Development Division of the Emax Corporation has developed three new
+products. A decision now needs to be made on which mix of these products should be produced.
+Management wants primary consideration given to three factors: total profit, stability in the
+workforce, and achieving an increase in the company’s earnings next year from the $75 million
+achieved this year. In particular, using the units given in the following table, they want to
+Maximize Z = P - 6C - 3D, where
+P = total (discounted) profit over the life of the new products,
+C = change (in either direction) in the current level of employment,
+D = decrease (if any) in next year’s earnings from the current year’s level.
+The amount of any increase in earnings does not enter into Z, because management is concerned
+primarily with just achieving some increase to keep the stockholders happy. (It has mixed
+feelings about a large increase that then would be difficult to surpass in subsequent years.)
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Loading Required Package
+```{r}
+library(lpSolveAPI)
+```
+
+# The file "Assignment_4.lp" contains a representation of the model mentioned above.
+
+```{r}
+g <- read.lp("C:/Users/jeeva thangamani/Documents/GitHub/64018/Assignment_4/Assignment_4.lp")
+g                         
+```
+
+## Solve
+```{r}
+solve(g)
+get.objective(g)
+get.variables(g)
+get.constraints(g)
+```
+
+```{r}
+#The following table illustrates the effects of each of the new goods (per unit rate of production) on each of these factors:
+# Create the matrix
+g_tab <- matrix(c("Total Profit", "Employment Level", "Earnings Next Year",
+20, 6, 8,
+15, 4, 7,
+25, 5, 5,
+"Maximize", "=50", ">=75",
+"Millions of Dollars", "Hundreds of Employees", "Millions of Dollars"),
+ncol = 6, byrow = FALSE)
+# Set column names
+colnames(g_tab) <- c("Factor", "Product 1", "Product 2", "Product 3", "Goal", "Units")
+as.table(g_tab)
+```
+
+
+```{r}
+get.sensitivity.rhs(g)
+get.sensitivity.objex(g)
+```
